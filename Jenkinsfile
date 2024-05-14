@@ -21,11 +21,14 @@ pipeline {
                 bat 'docker build -t tehseenabbas211/jenkins-integration:latest .'
             }
         }
-        stage('login'){
-            steps{
-                bat 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-            }
-        }
+        stage('Login') {
+         steps {
+    withCredentials([usernamePassword(credentialsId: 'dockerhub_211', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+      bat 'docker login -u $USERNAME -p $PASSWORD --password-stdin'
+    }
+  }
+}
+
         stage('push'){
             steps{
                 bat 'docker push tehseenabbas211/jenkins-integration:latest'
