@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub_211')
+        DOCKERHUB_CREDENTIALS = credentials('docker_hub211920')
     }
     stages {
         stage('Build') {
@@ -19,12 +19,9 @@ pipeline {
                 bat 'docker build -t tehseenabbas211/jenkins-integration:latest .'
             }
         }
-        stage('Login') {
-            // Remove the --password flag
+        stage('login') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub_211', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    bat 'docker login -u $USERNAME --password-stdin' // Use sh for shell script execution
-                }
+                bat 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
         stage('push') {
@@ -38,4 +35,5 @@ pipeline {
             }
         }
     }
+
 }
